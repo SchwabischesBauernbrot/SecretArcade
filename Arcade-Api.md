@@ -23,6 +23,6 @@
  # Returns the world time in seconds.
  Time()
 
- # Checks if a key is pressed, ("left", "right", "up")
+ # Checks if a key is pressed, ("left", "right", "space")
  IsKeyPressed("right")
 ```
