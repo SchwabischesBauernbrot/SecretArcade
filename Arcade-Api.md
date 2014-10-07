@@ -20,5 +20,6 @@
  # Wrap a number (n) within a size (max)
  Repeat(n, max)
 
+ # Returns the world time in seconds.
  Time()
 ```
