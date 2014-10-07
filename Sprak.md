@@ -1,3 +1,11 @@
+## Types
+`
+string s = "hello"
+number x = 10.0
+bool   b = true
+array  a = [1,2,3]
+`
+
 ```
     ClearText()
 
