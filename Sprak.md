@@ -6,6 +6,14 @@ bool   b = true
 array  a = [1,2,3]
 ```
 
+## Array tricks
+```
+var a = ["yup", 10]
+a[0] = "nope"
+a["x"] = 50
+Count(a)
+```
+
 ## Comments
 ```
 # this is a comment
