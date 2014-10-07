@@ -8,7 +8,7 @@
  #Draw Rect defined by two corner points
  Rect(x1, x2, y1, y2)
 
- #Swap drawing buffer, Use this to display your draw commands
+ #Swaps drawing buffer, Use this to display your draw commands
  DisplayGraphics()
 
  #Convert Hue Saturation Value to a list contaning rgb (l[0] == r, l[1] == g, l[2] == b)
