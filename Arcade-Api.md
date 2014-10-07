@@ -11,13 +11,13 @@
  # Swaps drawing buffer, Use this to display your draw commands
  DisplayGraphics()
 
- # Convert Hue Saturation Value to a list contaning rgb (l[0] == r, l[1] == g, l[2] == b)
+ # Convert (hue, saturation, value) to an array [red, green, blue]
  HSVtoRGB(h,s,v) 
  
- # Convert color red green blue to a list contaning hsv (l[0] == h, l[1] == s, l[2] == v)
+ # Convert color (red, green, blue) to an array [hue, saturation, value]
  RGBtoHSV(r,g,b) 
 
- # Wrap a number n within a size max
+ # Wrap a number (n) within a size (max)
  Repeat(n, max)
 
  Time()
