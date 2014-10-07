@@ -36,9 +36,7 @@ array  a = [1,2,3]
 ## Loops
 ```
     loop x from 1 to 10
-        loop y in stuff
-            Print(y)
-        end
+        sum += x
     end
 
     loop a in stuff
@@ -53,4 +51,7 @@ array  a = [1,2,3]
 + - * /
 && ||
 and or
++= -= *= /=
+++
+--
 ```
