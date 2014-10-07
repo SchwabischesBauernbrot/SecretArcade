@@ -1,6 +1,6 @@
+```
 # Breakout variant of Eriks original Pong code
 
-```
 ClearText()
 DisplayGraphics()
 var score = 0
