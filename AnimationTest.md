@@ -6,6 +6,9 @@ ClearText()
 
 var animStep = 0.1
 var animate = true
+number x=10
+number y=130
+number speed=50
 
 var anim_walk = []
 var man_ps = []
@@ -94,17 +97,15 @@ anim_walk[4] = man_ps
 var man_ls = []
 man_ls = [[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[5,7],[3,6],[6,8],[4,9],[9,11],[4,10],[10,12]]
 
-number x=10
-number y=10
 
 number T = Time()
 number dT
 number aT = 0
 number ai = 0
 loop
- dT = T-Time()
+ dT = Time()-T
  T = Time()
- 
+
  if (Time()-aT) > animStep
   ai = ai + 1
   ai = Mod(ai,Count(anim_walk))
@@ -113,12 +114,17 @@ loop
   end
   aT = Time()
  end
- 
+
+ x = Mod(x + dT * speed,512)
  loop l in man_ls
   var p1 = man_ps[l[0]]
-  var p2 = man_ps[l[1]]
-  Line(x+p1[0],y+p1[1],x+p2[0],y+p2[1])  
+  var p2 = man_ps[l[1]] 
+  Line(x+p1[0],y+p1[1],x+p2[0],y+p2[1])    
  end
+ 
+ # Ground
+ Line(0,y+61,512,y+61)
+ 
  DisplayGraphics()
 end
 ```
