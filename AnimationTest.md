@@ -1,3 +1,4 @@
+```
 # A test of an animated stick-character
 #
 # W=512, H=256
@@ -120,3 +121,4 @@ loop
  end
  DisplayGraphics()
 end
+```
