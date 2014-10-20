@@ -38,7 +38,6 @@ loop
 	lastT = Time()
 	UpdateGame(dt)
 	Render()
-	DisplayGraphics()
 end
 
 void UpdateGame(number dt)
