@@ -5,7 +5,15 @@ Print("")
 Print("")
 Print("")
 Print("")
-Print("         Asteroids 0.1 by drZool")
+Print("")
+Print("")
+Print("")
+Print("")
+Print("")
+Print("")
+Print("                      Asteroids by drZool")
+Print("")
+Print("                          Version 0.2")
 
 Sleep(2)
 
@@ -34,266 +42,321 @@ array frame = [warp_left,warp_top,warp_right,warp_top,warp_right,warp_bottom,war
 array asteroids = []
 
 loop
-	number dt = Time() - lastT
-	lastT = Time()
-	UpdateGame(dt)
-	Render()
+    number dt = Time() - lastT
+    lastT = Time()
+    UpdateGame(dt)
+    Render()
 end
 
 void UpdateGame(number dt)
 
-	if( currentlevel != level)
-		InitLevel(level)
-	end
+    if( currentlevel != level)
+        InitLevel(level)
+    end
 
-	OnInput(dt)
+    OnInput(dt)
 
-	var xrot = Cos(ship["rot"])
-	var yrot = Sin(ship["rot"])
+    var xrot = Cos(ship["rot"])
+    var yrot = Sin(ship["rot"])
 
-	ship["velx"] = ship["velx"] + (xrot * ship_thrust * dt)
-	ship["vely"] = ship["vely"] + (yrot * ship_thrust * dt)
+    ship["velx"] = ship["velx"] + (xrot * ship_thrust * dt)
+    ship["vely"] = ship["vely"] + (yrot * ship_thrust * dt)
 
-	loop objects
-		if( Count(@) > 0)
-			@["x"] = @["x"] + @["velx"]
-			@["y"] = @["y"] + @["vely"]
+    loop objects
+        if( Count(@) > 0)
+            @["x"] = @["x"] + @["velx"] * dt * 30
+            @["y"] = @["y"] + @["vely"] * dt * 30
 
-			if( @["x"] < warp_left)
-				@["x"] = @["x"] + warp_width
-			else if ( @["x"] > warp_right)
-				@["x"] = @["x"] - warp_width
-			end
+            if( @["x"] < warp_left)
+                @["x"] = @["x"] + warp_width
+            else if ( @["x"] > warp_right)
+                @["x"] = @["x"] - warp_width
+            end
 
-			if( @["y"] < warp_top)
-				@["y"] = @["y"] + warp_height
-			else if ( @["y"] > warp_bottom )
-				@["y"] = @["y"] - warp_height
-			end
-		end
-	end
+            if( @["y"] < warp_top)
+                @["y"] = @["y"] + warp_height
+            else if ( @["y"] > warp_bottom )
+                @["y"] = @["y"] - warp_height
+            end
+        end
+    end
 
-	if( Count(bullet) == 0 )
-		if( ship_fire )
-			Fire()
-		end
-	else
-		if( bullet["dietime"] < Time())
-			RemoveBullet()
-		else
-			CollisionDetectBullet()
-		end
-	end
+    if( Count(bullet) == 0 )
+        if( ship_fire )
+            Fire()
+        end
+    else
+        if( bullet["dietime"] < Time())
+            RemoveBullet()
+        else
+            CollisionDetectBullet()
+        end
+    end
 
-	Render()
+    CollisionDetectShip()
 
 end
 
 void Fire()
-	bullet = CreateObject("bullet", ship["x"] , ship["y"], [-5,0,5,0], "bullet" )
-	bullet["rot"] = ship["rot"]
-	bullet["velx"] = Cos(ship["rot"]) * 3
-	bullet["vely"] = Sin(ship["rot"]) * 3
-	bullet["dietime"] = Time() + 3
-	PlaySound("Laser 1")
+    bullet = CreateObject("bullet", ship["x"] , ship["y"], [-5,0,5,0], "bullet" )
+    bullet["rot"] = ship["rot"]
+    bullet["velx"] = Cos(ship["rot"]) * 3
+    bullet["vely"] = Sin(ship["rot"]) * 3
+    bullet["dietime"] = Time() + 3
+    PlaySound("Laser 1")
 end
 
 void CollisionDetectBullet()
-	#test collide bullet with asteroids
-	loop objects
-		if( Count(@) > 0 )
-			if(@["type"] == "asteroid")
-				number radiusSquared = @["radius"] * @["radius"]
-				number distanceSquared = GetSquaredDistance(bullet, @)
-				if( distanceSquared <= radiusSquared)
-					ExplodeAsteroid(@)
-					RemoveBullet()
-					return
-				end
-			end
-		end
-	end
+    #test collide bullet with asteroids
+    loop objects
+        if( Count(@) > 0 )
+            if(@["type"] == "asteroid")
+                number radiusSquared = @["radius"] * @["radius"]
+                number distanceSquared = GetSquaredDistance(bullet, @)
+                if( distanceSquared <= radiusSquared)
+                    ExplodeAsteroid(@)
+                    RemoveBullet()
+                    return
+                end
+            end
+        end
+    end
+end
+
+void CollisionDetectShip()
+    #test collide bullet with asteroids
+    loop objects
+        if( Count(@) > 0 )
+            if(@["type"] == "asteroid")
+                number radiusSquared = @["radius"] * @["radius"]
+                radiusSquared += ship["radius"] * ship["radius"]
+                number distanceSquared = GetSquaredDistance(ship, @)
+                if( distanceSquared <= radiusSquared)
+                    ExplodeShip()
+                    return
+                end
+            end
+        end
+    end
+end
+
+void ExplodeShip()
+  PlaySound("Explosion 2")
+  lives --
+
+  if( lives <= 0)
+    ClearText()
+    Print("")
+    Print("")
+    Print("")
+    Print("")
+    Print("")
+    Print("")
+    Print("")
+    Print("")
+    Print("")
+    Print("")
+    Print("                         Game Over")
+    Print("")
+    Print("                          Score "+ score)
+    Sleep(10)
+
+    lives = 3
+    level = 1
+    currentlevel = 0
+  else
+    currentlevel -- # restart level
+  end
 end
 
 void ExplodeAsteroid(array asteroid)
-	PlaySound("Explosion 1")
-	score ++
+    PlaySound("Explosion 1")
+    score ++
 
-	if( asteroid["size"] > 1 )
-		loop from 1 to 2
-			var theta = asteroid["velangle"] + RandomRange(-1,1)
-			CreateAsteroid( asteroid["size"] - 1, asteroid["x"] , asteroid["y"] , theta)
-		end
-	end
+    if( asteroid["size"] > 1 )
+        loop from 1 to 2
+            var theta = asteroid["velangle"] + RandomRange(-1,1)
+            CreateAsteroid( asteroid["size"] - 1, asteroid["x"] , asteroid["y"] , theta)
+        end
+    end
 
-	asteroidCount--
-	RemoveObject(asteroid)
+    asteroidCount--
+    RemoveObject(asteroid)
 
-	if( asteroidCount <= 0)
-		level ++
-	end
+    if( asteroidCount <= 0)
+        level ++
+    end
 end
 
 array AngleToVector(number theta, number length)
-	return [Cos(theta) * length, Sin(theta) * length]
+    return [Cos(theta) * length, Sin(theta) * length]
 end
 
 void RemoveObject(array object)
-	string name = object["name"]
-	object = []
-	objects[name] = object
-	# Remove( objects, name) #todo 
+    string name = object["name"]
+    object = []
+    objects[name] = object
+    # Remove( objects, name) #todo
 end
 
 void RemoveBullet()
-	bullet = []
-	objects["bullet"] = bullet
+    bullet = []
+    objects["bullet"] = bullet
 end
 
 number GetSquaredDistance(array a, array b)
-	number dx = a["x"] - b["x"]
-	number dy = a["y"] - b["y"]
-	return dx * dx + dy * dy
+    number dx = a["x"] - b["x"]
+    number dy = a["y"] - b["y"]
+    return dx * dx + dy * dy
 end
 
 void Render()
 
-	ClearText()	
-	Print("Level: "+ currentlevel + " Score: " + score)
+    ClearText()
+    Print("Level: "+ currentlevel + " Lives: " + lives + " Score: " + score)
 
-	loop objects
-		if Count(@) != 0
-			array lines = @["lines"]
-			if( @["rot"] != 0)
-				lines = RotatePoints(lines, @["rot"])	# todo lookup rotations?	
-			end
-			Lines(lines, @["x"], @["y"], true)
-		end
-	end
+    loop objects
+        if Count(@) != 0
+            array lines = @["lines"]
+            if( @["rot"] != 0)
+                number rot = Round (@["rot"]*100)
+                if( @["cachedrot"] == rot)
+                  lines = @["cachedlines"]
+                else
+                  lines = RotatePoints(lines, @["rot"])
+                  @["cachedrot"] = rot
+                  @["cachedlines"] = lines
+                end
+            end
+            Lines(lines, @["x"], @["y"], true)
+        end
+    end
 
-	DisplayGraphics()
-    
+    DisplayGraphics()
+
 end
 
 void OnInput(number dt)
-	number turnspeed = 1.5
+    number turnspeed = 1.5
 
-	if(IsKeyPressed("left"))
-		ship["rot"] = ship["rot"] - dt * turnspeed
-	else if(IsKeyPressed("right"))
-		ship["rot"] = ship["rot"] + dt * turnspeed
-	end
+    if(IsKeyPressed("left"))
+        ship["rot"] = ship["rot"] - dt * turnspeed
+    else if(IsKeyPressed("right"))
+        ship["rot"] = ship["rot"] + dt * turnspeed
+    end
 
-	if(IsKeyPressed("up"))
-		ship_thrust = 1
-	else if(IsKeyPressed("down"))
-		ship_thrust = -1
-	else
-		ship_thrust = 0
-	end
+    if(IsKeyPressed("up"))
+        ship_thrust = 1
+    else if(IsKeyPressed("down"))
+        ship_thrust = -1
+    else
+        ship_thrust = 0
+    end
 
-	ship_fire = (IsKeyPressed("space"))
+    ship_fire = (IsKeyPressed("space"))
 end
 
 array CreateObject(string name, number x, number y, array lines, string type )
 
-	array obj = []
-	obj["name"] = name
-	obj["x"] = x
-	obj["y"] = y
-	obj["velx"] = 0
-	obj["vely"] = 0
-	obj["lines"] = lines
-	obj["rot"] = 0
-	obj["type"] = type
+    array obj = []
+    obj["name"] = name
+    obj["x"] = x
+    obj["y"] = y
+    obj["velx"] = 0
+    obj["vely"] = 0
+    obj["lines"] = lines
+    obj["rot"] = 0
+    obj["cachedrot"] = 0
+    obj["cachedlines"] = []
+    obj["type"] = type
 
-	objects[name] = obj
+    objects[name] = obj
 
-	return obj
+    return obj
 end
 
 void InitLevel(number level)
-	currentlevel = level
+    currentlevel = level
 
-	if( level > 1)
-		PlaySound("Powerup 1")
-	end
+    if( level > 1)
+        PlaySound("Powerup 1")
+    end
 
-	objects = []
-	asteroidCount = 0
-	# CreateObject("warpFrame", 0, 0, frame, "debug")
+    objects = []
+    asteroidCount = 0
+    # CreateObject("warpFrame", 0, 0, frame, "debug")
 
-	ship = CreateObject("ship", (warp_left + warp_right) / 2, (warp_top + warp_bottom) / 2, [-10, -6, 10, 0, -10, 6], "ship")
-	ship["radius"] = 8
+    ship = CreateObject("ship", (warp_left + warp_right) / 2, (warp_top + warp_bottom) / 2, [-10, -6, 10, 0, -10, 6, -7, 0], "ship")
+    ship["radius"] = 8
 
-	loop from 1 to level
-		CreateAsteroid(3, RandomRange(warp_left,warp_right), RandomRange(warp_top,warp_bottom), RandomRange(0, 3.14*2) )
-	end
+    loop from 1 to level
+        CreateAsteroid(3, RandomRange(warp_left,warp_right), RandomRange(warp_top,warp_bottom), RandomRange(0, 3.14*2) )
+    end
 
-	DisplayGraphics()
+    DisplayGraphics()
 end
 
 void CreateAsteroid(number size, number x, number y, number theta)
 
-	asteroidId++
-	asteroidCount++
+    asteroidId++
+    asteroidCount++
 
-	var speed = AngleToVector(theta, RandomRange(0.25,0.5))
+    var speed = AngleToVector(theta, RandomRange(0.25,0.5))
 
-	var asteroid = CreateObject("asteroid" + asteroidId, x, y, CreateCircleOfLines(6 + size, 10 + size) , "asteroid")
-	asteroid["radius"] = 10
+    var asteroid = CreateObject("asteroid" + asteroidId, x, y, CreateCircleOfLines(6 + size, 10 + size) , "asteroid")
+    asteroid["radius"] = 10
 
-	asteroid["velangle"] = theta
-	asteroid["velx"] = speed[0]
-	asteroid["vely"] = speed[1]
-	asteroid["size"] = size
+    asteroid["velangle"] = theta
+    asteroid["velx"] = speed[0]
+    asteroid["vely"] = speed[1]
+    asteroid["size"] = size
 
-	return asteroid
+    return asteroid
 end
 
 array CreateCircleOfLines( number radius, number points)
-	array newLines = []
-	number halfPoints = points / 2
-	number anglePerStep = (3.14*4)/points
-	loop i from 0 to halfPoints - 1
-		number theta = anglePerStep * i
-		newLines[i*2] = Cos(theta) * radius
-		newLines[i*2 + 1] = Sin(theta) * radius
-	end
-	return newLines
+    array newLines = []
+    number halfPoints = points / 2
+    number anglePerStep = (3.14*4)/points
+    loop i from 0 to halfPoints - 1
+        number theta = anglePerStep * i
+        newLines[i*2] = Cos(theta) * radius
+        newLines[i*2 + 1] = Sin(theta) * radius
+    end
+    return newLines
 end
 
 void Lines(array lines, number x, number y, bool close)
-	number linesCount = Count(lines)
-	number halfLinesCount = Round(linesCount/2) - 2
+    number linesCount = Count(lines)
+    number halfLinesCount = Round(linesCount/2) - 2
 
-	loop istep from 0 to halfLinesCount
-		number i = istep*2
-		Line( x + lines[i], y + lines[i + 1], x + lines[i + 2], y + lines[i + 3])
-	end
-	
-	if( close )
-		Line( x + lines[0] , y + lines[1],  x + lines[linesCount - 2], y + lines[linesCount - 1] )
-	end
+    loop istep from 0 to halfLinesCount
+        number i = istep*2
+        Line( x + lines[i], y + lines[i + 1], x + lines[i + 2], y + lines[i + 3])
+    end
+
+    if( close )
+        Line( x + lines[0] , y + lines[1],  x + lines[linesCount - 2], y + lines[linesCount - 1] )
+    end
 end
 
 array RotatePoints(array lines, number theta)
 
-	number linesCount = Count(lines)
-	number halfLinesCount = Round(linesCount / 2) - 1
+    number linesCount = Count(lines)
+    number halfLinesCount = Round(linesCount / 2) - 1
 
-	array newLines = []
+    array newLines = []
 
-	loop istep from 0 to halfLinesCount
-		number i = istep*2
-		number px = lines[i]
-		number py = lines[i + 1]
+    loop istep from 0 to halfLinesCount
+        number i = istep*2
+        number px = lines[i]
+        number py = lines[i + 1]
 
-		newLines[i] = Cos(theta) * px - Sin(theta) * py
-		newLines[i + 1] = Sin(theta) * px + Cos(theta) * py 
-	end
-	
-	return newLines
+        newLines[i] = Cos(theta) * px - Sin(theta) * py
+        newLines[i + 1] = Sin(theta) * px + Cos(theta) * py
+    end
+
+    return newLines
 end
 
 void DrawSprite(array sprite, number w, number x, number y)
@@ -301,27 +364,28 @@ void DrawSprite(array sprite, number w, number x, number y)
     var count = Count(sprite)
     loop
 
-	    if( sprite[i] > 0 )    
-	    	var lx = x + Mod(i, w)
-	    	var ly = y + (i / w)
-	    	Rect(lx, ly, lx+1, ly+1)
-	    end
-	    
-	    i = i + 1
-	    if( i >= count)
-	        return
-	    end
+        if( sprite[i] > 0 )
+            var lx = x + Mod(i, w)
+            var ly = y + (i / w)
+            Rect(lx, ly, lx+1, ly+1)
+        end
+
+        i = i + 1
+        if( i >= count)
+            return
+        end
     end
 end
 
 
 number RandomRange(number low, number high)
-	return low + (Random() * (high - low))
+    return low + (Random() * (high - low))
 end
 
 void SetRainbowColor()
-	number t = Repeat(Time(), 1)
-	var col = HSVtoRGB(t, 1, 1)
-	Color(col[0], col[1], col[2])
+    number t = Repeat(Time(), 1)
+    var col = HSVtoRGB(t, 1, 1)
+    Color(col[0], col[1], col[2])
 end
+
 ```
