@@ -13,7 +13,7 @@ Print("")
 Print("")
 Print("                      Asteroids by drZool")
 Print("")
-Print("                          Version 0.2")
+Print("                          Version 0.3")
 
 Sleep(2)
 
@@ -175,7 +175,7 @@ void ExplodeAsteroid(array asteroid)
 
     if( asteroid["size"] > 1 )
         loop from 1 to 2
-            var theta = asteroid["velangle"] + RandomRange(-1,1)
+            var theta = asteroid["velangle"] + RandomRange(-2,2)
             CreateAsteroid( asteroid["size"] - 1, asteroid["x"] , asteroid["y"] , theta)
         end
     end
@@ -301,9 +301,12 @@ void CreateAsteroid(number size, number x, number y, number theta)
     asteroidId++
     asteroidCount++
 
-    var speed = AngleToVector(theta, RandomRange(0.25,0.5))
+    var speed = AngleToVector(theta, RandomRange(1.2,1.4) - (3 / size))
 
-    var asteroid = CreateObject("asteroid" + asteroidId, x, y, CreateCircleOfLines(6 + size, 10 + size) , "asteroid")
+    array lines = CreateCircleOfLines(4 + size*2, 10 + size)
+    MutateLines(lines, size + 2)
+
+    var asteroid = CreateObject("asteroid" + asteroidId, x, y, lines , "asteroid")
     asteroid["radius"] = 10
 
     asteroid["velangle"] = theta
@@ -312,6 +315,12 @@ void CreateAsteroid(number size, number x, number y, number theta)
     asteroid["size"] = size
 
     return asteroid
+end
+
+void MutateLines(array lines, number range)
+  loop i from 0 to Count(lines) - 1
+    lines[i] = lines[i] + RandomRange(-range, range)
+  end
 end
 
 array CreateCircleOfLines( number radius, number points)
