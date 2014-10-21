@@ -13,7 +13,7 @@ Print("")
 Print("")
 Print("                      Asteroids by drZool")
 Print("")
-Print("                          Version 0.3")
+Print("                          Version 0.4")
 
 Sleep(2)
 
@@ -87,7 +87,7 @@ void UpdateGame(number dt)
         end
     else
         if( bullet["dietime"] < Time())
-            RemoveBullet()
+            bullet = []
         else
             CollisionDetectBullet()
         end
@@ -109,7 +109,7 @@ end
 void CollisionDetectBullet()
     #test collide bullet with asteroids
     loop objects
-        if( Count(@) > 0 )
+        if( HasIndex(@, "type") )
             if(@["type"] == "asteroid")
                 number radiusSquared = @["radius"] * @["radius"]
                 number distanceSquared = GetSquaredDistance(bullet, @)
@@ -126,7 +126,7 @@ end
 void CollisionDetectShip()
     #test collide bullet with asteroids
     loop objects
-        if( Count(@) > 0 )
+        if( HasIndex(@, "type") )
             if(@["type"] == "asteroid")
                 number radiusSquared = @["radius"] * @["radius"]
                 radiusSquared += ship["radius"] * ship["radius"]
@@ -192,16 +192,15 @@ array AngleToVector(number theta, number length)
     return [Cos(theta) * length, Sin(theta) * length]
 end
 
-void RemoveObject(array object)
-    string name = object["name"]
-    object = []
-    objects[name] = object
-    # Remove( objects, name) #todo
-end
-
 void RemoveBullet()
     bullet = []
-    objects["bullet"] = bullet
+    if( HasIndex(objects, "bullet"))
+      Remove( objects, "bullet")
+    end
+end
+
+void RemoveObject(array object)
+    Remove( objects, object["name"])
 end
 
 number GetSquaredDistance(array a, array b)
@@ -228,12 +227,30 @@ void Render()
                   @["cachedlines"] = lines
                 end
             end
-            Lines(lines, @["x"], @["y"], true)
+            DrawLines(lines, @["x"], @["y"], true)
         end
     end
 
     DisplayGraphics()
 
+end
+
+void DrawLines(array lines, number x, number y, bool close)
+  array newLines = []
+  number linesCount = Round(Count(lines)/2)
+  if( linesCount <= 0)
+    return
+  end
+
+  loop i from 0 to (linesCount - 1)
+    Append(newLines, (lines[i*2]+x))
+    Append(newLines, (lines[i*2+1]+y))
+  end
+  if(close)
+    Append(newLines,newLines[0])
+    Append(newLines,newLines[1])
+  end
+  Lines(newLines)
 end
 
 void OnInput(number dt)
@@ -297,7 +314,7 @@ void InitLevel(number level)
 end
 
 void CreateAsteroid(number size, number x, number y, number theta)
-
+    
     asteroidId++
     asteroidCount++
 
@@ -335,20 +352,6 @@ array CreateCircleOfLines( number radius, number points)
     return newLines
 end
 
-void Lines(array lines, number x, number y, bool close)
-    number linesCount = Count(lines)
-    number halfLinesCount = Round(linesCount/2) - 2
-
-    loop istep from 0 to halfLinesCount
-        number i = istep*2
-        Line( x + lines[i], y + lines[i + 1], x + lines[i + 2], y + lines[i + 3])
-    end
-
-    if( close )
-        Line( x + lines[0] , y + lines[1],  x + lines[linesCount - 2], y + lines[linesCount - 1] )
-    end
-end
-
 array RotatePoints(array lines, number theta)
 
     number linesCount = Count(lines)
@@ -361,40 +364,15 @@ array RotatePoints(array lines, number theta)
         number px = lines[i]
         number py = lines[i + 1]
 
-        newLines[i] = Cos(theta) * px - Sin(theta) * py
-        newLines[i + 1] = Sin(theta) * px + Cos(theta) * py
+        Append(newLines, Cos(theta) * px - Sin(theta) * py )
+        Append(newLines, Sin(theta) * px + Cos(theta) * py )
     end
 
     return newLines
 end
 
-void DrawSprite(array sprite, number w, number x, number y)
-    var i = 0
-    var count = Count(sprite)
-    loop
-
-        if( sprite[i] > 0 )
-            var lx = x + Mod(i, w)
-            var ly = y + (i / w)
-            Rect(lx, ly, lx+1, ly+1)
-        end
-
-        i = i + 1
-        if( i >= count)
-            return
-        end
-    end
-end
-
-
 number RandomRange(number low, number high)
     return low + (Random() * (high - low))
-end
-
-void SetRainbowColor()
-    number t = Repeat(Time(), 1)
-    var col = HSVtoRGB(t, 1, 1)
-    Color(col[0], col[1], col[2])
 end
 
 ```
