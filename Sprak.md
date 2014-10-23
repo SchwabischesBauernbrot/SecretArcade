@@ -50,6 +50,10 @@ Count(a)
     loop a in stuff
         Print(a)
     end
+
+    loop
+        # forever
+    end
 ```
 
 ## Operators
