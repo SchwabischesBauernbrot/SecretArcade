@@ -22,8 +22,7 @@ Count(a)
 ## Functions
 ```
     ClearText()
-    number x = Input()
-    number y = InputWithPrompt("Enter one more number: ")
+    number x = Input("")
 
     void Foo(string x)
         return x + "!"
