@@ -1,3 +1,4 @@
+```
 ## Clears the screen ready for a new game
 ClearText()
 DisplayGraphics()
@@ -297,3 +298,4 @@ loop
 end
 ## end of whole game loop
 end
+```
