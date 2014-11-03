@@ -4,14 +4,16 @@ ClearText()
 DisplayGraphics()
 
 ## Sets up all the vars
-number room
-room = 1
+number room = 1
 number score
 string name
 number getfluff
 string firstChoice
 string inventory
-string secondChoice
+string firstFight
+number HEA = 10
+number STR = 4
+number DEF = 5
     
 ## Checks if there is a savegame and loads it
 if HasFloppy()
@@ -94,12 +96,25 @@ void Response()
     else if response == "kill guard"
     output = "kill guard"
     return output
+    else if response == "strong"
+    output = "strong"
+    return output
+    else if response == "weak"
+    output = "weak"
+    return output
     else if response == "check"
     checkInventory(getfluff)
     else if response == "save"
     saveGame()
     else if response == "score"
-    Print ("Your score is " + score)
+    Print("Your score is " + score)
+    else if response == "stats"
+    Message("Your strength is "+STR+", your defence is "+DEF)
+    Message("and your health is "+HEA+".")
+    else if response == "help"
+    Message("Most of the commands are context sensitive, but")
+    Message("the commands CHECK, SAVE, SCORE and STATS are")
+    Message("always avaialble.")
     else if response == "kill"
         string response2 = Input("Who will you kill? ")
         if response2 == "self"
@@ -125,6 +140,117 @@ void Response()
     else
     Message("What? Speak up kid, I can't hear ya.")
     end
+    end
+end
+
+
+##OH GOD THIS IS THE FIGHTING FUNCTION
+##IT'S KINDA MESSY
+void fightEngine(number En_STR, number En_DEF, number En_HEA)
+    number attack
+    string action
+    string victory
+    number enemyAttack
+    number healthBeforeAttack
+    number EnHealthBeforeAttack       
+    bool playerTurn = true
+    loop
+    Message("Your strength is "+STR+", your defence is "+DEF)
+    Message("and your health is "+HEA+".")
+    Message("Enemy's strength is "+En_STR+", defence is "+En_DEF)
+    Message("and health is "+En_HEA)
+    loop
+    if playerTurn == true
+    Message("Will you do a STRONG or WEAK attack?")
+    action = Response()
+    if action == "strong"
+        attack = Int(STR + 10*Random())
+        EnHealthBeforeAttack = En_HEA
+        En_HEA = En_HEA - calcAttack(attack, En_DEF)
+        if EnHealthBeforeAttack - En_HEA != 0
+        Message("You do "+Int(EnHealthBeforeAttack - En_HEA)+ " points of damage")
+        else
+        Message("Your blow glances off the enemy. Poor effort")
+        end
+        playerTurn = false
+        break
+    else if action == "weak"
+        attack = Int(10*Random())
+        if attack > 6
+            attack = 6
+        else if attack < 3
+            attack = 3
+        end
+        attack = STR + attack
+        EnHealthBeforeAttack = En_HEA
+        En_HEA -= calcAttack(attack, En_DEF)
+        if EnHealthBeforeAttack - En_HEA > 0
+        Message("You do "+Int(EnHealthBeforeAttack - En_HEA)+"points of damage")
+        else
+        Message("Your blow glances off the enemy. Poor effort")
+        end
+        playerTurn = false
+        break
+    else
+    Message("I don't understand, have another crack.")
+    end
+    end
+        if En_HEA < 0
+        victory = "win"
+        return victory
+        end
+    if playerTurn == false
+    if Random() >= 0.5
+        enemyAttack = Int(En_STR + 10*Random())
+        healthBeforeAttack = HEA
+        HEA -= calcAttack(enemyAttack, DEF)
+        if healthBeforeAttack - HEA != 0
+        Message("The enemy does "+Int(healthBeforeAttack-HEA)+" pointsof damage. Ouch.")
+        else
+        Message("You shrug off the enemy's blow and make some")
+        Message("snide remark. You cheeky byugger")
+        end
+        playerTurn = true
+    else 
+        enemyAttack = Int(10*Random())
+        if enemyAttack > 6
+            enemyAttack = 6
+        else if enemyAttack < 3
+            enemyAttack = 3
+        end
+        enemyAttack = En_STR + enemyAttack
+        healthBeforeAttack = HEA
+        HEA -= calcAttack(enemyAttack, DEF)
+        if healthBeforeAttack - HEA != 0
+        Message("The enemy does "+Int(healthBeforeAttack-HEA)+" pointsof damage. Ouch.")
+        else
+        Message("You shrug off the enemy's blow and make some")
+        Message("snide remark. You cheeky bugger")
+        end
+        playerTurn = true
+    end
+    end
+    if HEA < 0
+        victory = "lose"
+        return victory
+    end                
+    end
+    end
+end
+
+
+#function that calculates if the player or the enemy loses
+#any health
+void calcAttack(number attack, number defense)
+    number newHealth
+    number damage
+    damage = attack - defense
+    if damage > 0
+        newHealth = damage 
+        return newHealth
+    else
+        newHealth = 0
+        return newHealth
     end
 end
 
@@ -254,22 +380,38 @@ void writeRoom1Wriggle()
     if action == "punch"
         Message("You clock the guard right in the back of the")
         Message("neck. He crumples to the floor. Triumph!")
-        return action
+        return "victory"
     else if action == "kick"
         Message("You deliver a solid boot into the guard's arse.")
         Message("He doubles over, but turns to face you.")
         Message("Get ready to fight!")
-        return action
+        string victory = fightEngine(2,3,5)
+        if victory == "win"
+        return "victory"
+        else if victory == "lose"
+        return "defeat"
+        end
     else if action == "kill"
         Message("A ruthless choice. You approach the guard from")
         Message("behind and choke him out. He won't be getting back")
         Message("up.")
-        return action
+        return "victory"
     else
         Message("Not sure what you mean there, fella.")
     end
     end
 end
+
+#The second death sequence, that occurs if you lose the fight
+void secondDeath()
+    Message("Alas, you are stabbed through the heart by a guard")
+    Message("with an axe to grind.")
+    Message("Your adventure ends here.")
+    Message("Your score was " + score + ".")
+    Input("Press enter to restart from the room where you died.")
+    ClearText()
+end
+
 # A title screen!
 Print("")
 Print("")
@@ -313,13 +455,23 @@ loop
            score --
            firstChoice = writeRoom1Shout()
         else if firstChoice == "WRIGGLE"
-            secondChoice = writeRoom1Wriggle()
+            score++
+            firstFight = writeRoom1Wriggle()
+            break
         else if firstChoice == "WAIT"
             #wait(name)
         else if firstChoice == "dead"
             killSelf()
             break
         end
+        end
+        if firstFight == "victory"
+            score++
+            Message("Yay you won the fight")
+            Input("")
+        else if firstFight == "defeat"
+            secondDeath()
+            break
         end
 
     end
