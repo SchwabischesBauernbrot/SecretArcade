@@ -1,5 +1,4 @@
 ```
-## Implement a response function, cut down on number of lines pls
 ## Clears the screen ready for a new game
 ClearText()
 DisplayGraphics()
