@@ -54,7 +54,10 @@ void Response()
     string response
     string output
     response = Input("")
-    if response == "yes"
+    if response == "y"
+    output = "true"
+    return output
+    else if response == "yes"
     output = "true"
     return output
     else if response == "yep"
@@ -65,6 +68,9 @@ void Response()
     return output
     else if response == "yeah"
     output = "true"
+    return output
+    else if response == "n"
+    output ="false"
     return output
     else if response == "no"
     output = "false"
@@ -356,6 +362,7 @@ void writeRoom1Shout()
     if action == "wriggle"
         return action
     else if action == "wait"
+        action = "waitsecond"
         return action
     else
     Message("Sorry " + name + ", but I don't understand")
@@ -402,6 +409,26 @@ void writeRoom1Wriggle()
     end
 end
 
+void writeRoom1Wait()
+    Message("Sometimes, being patient is sensible.")
+    Message("A friendly-looking guard walks into your cell")
+    Message("He announces 'It's been a shite day at work, so")
+    Message("I'm going to set you free.'")
+    Message("You don't know what's up with his accent.")
+    Message("It's like an ungodly scottish and french hybrid.")
+    Message("Still, can't complain, he's letting you go.")
+    Message("'Thanks,' you mutter. You smarmy prick.") 
+    Message("Don't blow it, now.")
+    Message("'The exit's out the right, just follow the red carpet")
+    Message("and eventually you'll reach some big doors,'he suggests")
+    Message("'Alternatively, your captor is deeper in the castle.'")
+    Message("If I were you, I'd make a break for it,") 
+    Message("but do what you like.")
+    Message("And off he goes, just like that. Now you're free,")
+    Message("you've got a bit of time to catch up on what")
+    Message("got you into this mess.")
+    Message("Cue exposition!")
+end
 #The second death sequence, that occurs if you lose the fight
 void secondDeath()
     Message("Alas, you are stabbed through the heart by a guard")
@@ -459,7 +486,12 @@ loop
             firstFight = writeRoom1Wriggle()
             break
         else if firstChoice == "WAIT"
-            #wait(name)
+            writeRoom1Wait()
+            #writeRoom1Exposition()
+            Input("")
+        else if firstChoice == "waitsecond"
+            firstDeath()
+            break
         else if firstChoice == "dead"
             killSelf()
             break
@@ -467,7 +499,7 @@ loop
         end
         if firstFight == "victory"
             score++
-            Message("Yay you won the fight")
+            Message("Ooft, poor bastard took a beating. Nice wqork.")
             Input("")
         else if firstFight == "defeat"
             secondDeath()
