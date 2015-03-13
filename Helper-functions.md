@@ -1,3 +1,4 @@
+```
 var ToLowercase(var text)
  var res = ""
  loop c in text
@@ -29,3 +30,4 @@ end
 bool IsUppercase(var c)
  return CharToInt(c) >= -32 && CharToInt(c) <= -7
 end
+```
