@@ -8,6 +8,9 @@
  # Draw Rect defined by two corner points
  Rect(x1, x2, y1, y2)
 
+ # Draw text in a specific position, IS CLEARED WHEN NORMAL Print() IS USED
+ Text(x, y, string)
+
  # Swaps drawing buffer, Use this to display your draw commands
  DisplayGraphics()
 
