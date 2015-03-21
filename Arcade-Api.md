@@ -29,7 +29,6 @@
  # Checks if a key is pressed, ("left", "right", "up", "down", "space")
  IsKeyPressed("right")
 
-
  # Remove all text from the screen
  ClearText ()
 
