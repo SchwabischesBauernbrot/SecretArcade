@@ -1,3 +1,4 @@
+```
 ClearText()
 
 # variables
@@ -437,3 +438,4 @@ void DisplayDataAsImage(array data, number scale, array position, array color, b
 	        i += 2
 	    end
 end
+```
