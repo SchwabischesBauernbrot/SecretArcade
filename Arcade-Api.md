@@ -11,6 +11,13 @@
  # Draw text in a specific position, IS CLEARED WHEN NORMAL Print() IS USED
  Text(x, y, string)
 
+ # Remove all text from the screen
+ ClearText ()
+
+ # Print text to the screen (terminal style)
+ Print (string text)
+NOTE THAT THIS WILL CLEAR TEXT PRINTED BY THE Text() FUNCTION!
+
  # Swaps drawing buffer, Use this to display your draw commands
  DisplayGraphics()
 
@@ -28,12 +35,6 @@
 
  # Checks if a key is pressed, ("left", "right", "up", "down", "space")
  IsKeyPressed("right")
-
- # Remove all text from the screen
- ClearText ()
-
- # Print text to the screen
- Print (string text)
 
  # Play a sound
  PlaySound (string soundName)
