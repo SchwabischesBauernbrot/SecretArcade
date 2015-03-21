@@ -3,10 +3,10 @@
  Color(r, g, b) 
 
  # Draw line between two points
- Line(x1, x2, y1, y2)
+ Line(x1, y1, x2, y2)
 
  # Draw Rect defined by two corner points
- Rect(x1, x2, y1, y2)
+ Rect(x1, y1, x2, y2)
 
  # Draw text in a specific position, IS CLEARED WHEN NORMAL Print() IS USED
  Text(x, y, string)
