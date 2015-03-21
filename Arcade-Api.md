@@ -1,4 +1,7 @@
 ```
+ # Return a random number between 0.0 and 1.0
+ Random()
+
  # Set drawing color
  Color(r, g, b) 
 
