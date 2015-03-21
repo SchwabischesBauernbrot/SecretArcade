@@ -28,4 +28,24 @@
 
  # Checks if a key is pressed, ("left", "right", "up", "down", "space")
  IsKeyPressed("right")
+
+
+ # Remove all text from the screen
+ ClearText ()
+
+ # Print text to the screen
+ Print (string text)
+
+ # Play a sound
+ PlaySound (string soundName)
+
+ # Set the pitch of the sound
+ Pitch (float pitch)
+
+ # The sinus function
+ Sin(float x)
+
+ # The cosinus function
+ Cos(float x)
+
 ```
