@@ -43,6 +43,9 @@ bool playExplosion = false
 bool playLaser = false
 string currentMessage = ""
 
+number totalFrames = 0
+number gameStartTime = Time()
+
 CreateStars()
 CreateEnemy()
 PlayGame()
@@ -55,10 +58,13 @@ void PlayGame()
 
     Color(0,0,0)
     Rect(0,0,512,256)
-    
+
+
     loop
         dt = Time() - T
         T = Time()
+
+        totalFrames ++
 
         playExplosion = false
         playLaser = false
@@ -80,12 +86,21 @@ void PlayGame()
         else if playLaser
             PlaySound("Laser 1")
         end
+
+        # dynamic frame rate star count adjustment
+        if dt < 0.04 and maxStarCount < 25
+            maxStarCount ++
+        else if dt > 0.1 and maxStarCount > 8
+            maxStarCount --
+        end
     end
 end
 
 
 void CreateStars()
-    loop x from 1 to maxStarCount
+    starCount = 0
+    stars = []
+    loop x from 1 to 30
         array star = []
         star["x"] = Random() * spaceWidth - spaceWidth * 0.5
         star["y"] = Random() * spaceWidth - spaceWidth * 0.5
@@ -99,6 +114,7 @@ void CreateStars()
 
     end
 end
+
 
 
 void CreateEnemy()
@@ -137,11 +153,12 @@ void Steer(number dt)
 
     # rotate all
     if IsKeyPressed("left")
-        loop stars
-            number x = @["x"] * cosTurn - @["y"] * sinTurn
-            number y = @["x"] * sinTurn + @["y"] * cosTurn
-            @["x"] = x
-            @["y"] = y
+        loop i from 0 to maxStarCount-1
+            var aStar = stars[i]
+            number x = aStar["x"] * cosTurn - aStar["y"] * sinTurn
+            number y = aStar["x"] * sinTurn + aStar["y"] * cosTurn
+            aStar["x"] = x
+            aStar["y"] = y
         end
         RotateThing(enemy, cosTurn, sinTurn, "x", "y")
         RotateThing(enemy, cosTurn, sinTurn, "velx", "vely")
@@ -149,11 +166,12 @@ void Steer(number dt)
         RotateThing(enemy, cosTurn, sinTurn, "lyx", "lyy")
     end
     if IsKeyPressed("right")
-        loop stars
-            number x = @["x"] * cosTurn - @["y"] * nSinTurn
-            number y = @["x"] * nSinTurn + @["y"] * cosTurn
-            @["x"] = x
-            @["y"] = y
+        loop i from 0 to maxStarCount-1
+            var aStar = stars[i]
+            number x = aStar["x"] * cosTurn - aStar["y"] * nSinTurn
+            number y = aStar["x"] * nSinTurn + aStar["y"] * cosTurn
+            aStar["x"] = x
+            aStar["y"] = y
         end
         RotateThing(enemy, cosTurn, nSinTurn, "x", "y")
         RotateThing(enemy, cosTurn, nSinTurn, "velx", "vely")
@@ -161,21 +179,23 @@ void Steer(number dt)
         RotateThing(enemy, cosTurn, nSinTurn, "lyx", "lyy")
     end
     if IsKeyPressed("down")
-        loop stars
-            number z = @["z"] * cosTurn - @["y"] * sinTurn
-            number y = @["z"] * sinTurn + @["y"] * cosTurn
-            @["z"] = z
-            @["y"] = y
+        loop i from 0 to maxStarCount-1
+            var aStar = stars[i]
+            number z = aStar["z"] * cosTurn - aStar["y"] * sinTurn
+            number y = aStar["z"] * sinTurn + aStar["y"] * cosTurn
+            aStar["z"] = z
+            aStar["y"] = y
         end
         RotateThing(enemy, cosTurn, sinTurn, "z", "y")
         RotateThing(enemy, cosTurn, sinTurn, "velz", "vely")
     end
     if IsKeyPressed("up")
-        loop stars
-            number z = @["z"] * cosTurn - @["y"] * nSinTurn
-            number y = @["z"] * nSinTurn + @["y"] * cosTurn
-            @["z"] = z
-            @["y"] = y
+        loop i from 0 to maxStarCount-1
+            var aStar = stars[i]
+            number z = aStar["z"] * cosTurn - aStar["y"] * nSinTurn
+            number y = aStar["z"] * nSinTurn + aStar["y"] * cosTurn
+            aStar["z"] = z
+            aStar["y"] = y
         end
         RotateThing(enemy, cosTurn, nSinTurn, "z", "y")
         RotateThing(enemy, cosTurn, nSinTurn, "velz", "vely")
@@ -185,7 +205,7 @@ end
 
 void Fire(number dt)
     bool spaceKeyDown = IsKeyPressed("space")
-    
+
     # turn off laser if on
     if laserOn
         if Time() > laserStartTime + laserDuration
@@ -204,7 +224,8 @@ end
 
 void MoveForward(number dt)
     number dz = dt * playerSpeed
-    loop s in stars
+    loop i from 0 to maxStarCount-1
+        var s = stars[i]
         s["z"] = s["z"] - dz
         if s["z"] <= 5.0
             # recycle star
@@ -263,7 +284,8 @@ void DrawStars()
     number x = 0.0
     number y = 0.0
     number z
-    loop s in stars
+    loop i from 0 to maxStarCount-1
+        var s = stars[i]
         if s["z"] > 5.0
             z = 1.0/s["z"]
             x = scale * s["x"] * z  + 256.0
