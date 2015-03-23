@@ -66,3 +66,41 @@ and or
 ++
 --
 ```
+
+## "KeyReleased" instead of "KeyPressed"
+Sometimes, instead of `KeyPressed` event (which will keep repeating the action as long as you're pressing the key down), you might need a way to find out if the user clicked a key at all (which will fire only once). This can be handy in situations when you don't want to "accidentally" keep repeating the same action in case the user didn't pull his finger off of the key fast enough. Here is how you can do that.
+
+```
+#input
+var keys = ["up","down","left","right","space"]
+array input = []
+array previous_input = []
+
+InitializeKeys()
+ 
+loop
+    ClearText()
+ 
+    loop key in keys
+        input[key] = IsKeyPressed(key)
+    end
+ 
+    # game logic!
+ 
+    loop key in keys
+        previous_input[key] = input[key]
+    end
+ 
+    DisplayGraphics()    
+end
+
+void InitializeKeys()
+    loop key in keys
+        previousInput[key] = false
+    end
+end
+
+void KeyReleased(string key)
+    return input[key] == false and previous_input[key] == true
+end
+```
