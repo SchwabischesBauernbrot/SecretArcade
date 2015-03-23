@@ -9,7 +9,7 @@ DisplayGraphics()
 var playerX = 128
 var playerY = 130
 var enemyX = 256
-var enemyY = 48
+var enemyY = 50
 var moveDir = 1
 
 var maxHP = 10
@@ -41,7 +41,6 @@ var w1r20 = ["#","#","#","#","#"," ","#","#","#","#","#","#","#","#","#","#","#"
 var w1r21 = [" "," "," "," ","#"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","#"," "," "," "," "," "," "," "," "]
 var w1r22 = [" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "]
 
-
 #COLLISION ARRAYS END -------------------
 
 DrawStats()
@@ -66,7 +65,7 @@ void OnInput()
 		if(playerX != 32 && collTile((playerX - 40) / 8, (playerY - 10) / 8) == false)
 			playerX -= 8
 			DrawStats()
-			#DoEnemy()
+			DoEnemy()
 		end
 	else if(IsKeyPressed("right"))
 		DrawStats()
@@ -74,7 +73,7 @@ void OnInput()
 		if(playerX != 344 && collTile((playerX - 24) / 8, (playerY - 10) / 8) == false)
 			playerX += 8
 			DrawStats()
-			#DoEnemy()
+			DoEnemy()
 		end
 	else if(IsKeyPressed("up"))
 		DrawStats()
@@ -82,7 +81,7 @@ void OnInput()
 		if(playerY != 26 && collTile((playerX - 32) / 8, (playerY - 18) / 8) == false)
 			playerY -= 8
 			DrawStats()
-			#DoEnemy()
+			DoEnemy()
 		end
 	else if(IsKeyPressed("down"))
 		DrawStats()
@@ -90,7 +89,7 @@ void OnInput()
 		if(playerY != 186 && collTile((playerX - 32) / 8, (playerY - 2) / 8) == false)
 			playerY += 8
 			DrawStats()
-			#DoEnemy()
+			DoEnemy()
 		end
 	end
 end
@@ -98,14 +97,14 @@ end
 
 void DoEnemy()
 	moveDir = Random()
-	if(moveDir < 0.25)
-		enemyY -= 16
-	else if(moveDir < 0.5)
-		enemyX += 16
-	else if(moveDir < 0.75)
-		enemyX -= 16
-	else if(moveDir < 1)
-		enemyY += 16
+	if(moveDir < 0.25 && enemyY != 26 && collTile((enemyX - 32) / 8, (enemyY - 18) / 8) == false)
+		enemyY -= 8
+	else if(moveDir < 0.5 && collTile((enemyX - 24) / 8, (enemyY - 10) / 8) == false)
+		enemyX += 8
+	else if(moveDir < 0.75 && collTile((enemyX - 40) / 8, (enemyY - 10) / 8) == false)
+		enemyX -= 8
+	else if(moveDir < 1 && enemyY != 186 && collTile((enemyX - 32) / 8, (enemyY - 2) / 8) == false)
+		enemyY += 8
 	end
 end
 
@@ -326,5 +325,4 @@ bool collTile(number x, number y)
 		return false
 	end
 end
-
 ```
