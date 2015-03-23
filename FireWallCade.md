@@ -8,6 +8,9 @@
 #
 
 
+# If the game is too fast on your machine, set cycleSpeedupThreshold to 1
+
+
 ###  With loooove from
 #     mistik - https://twitter.com/dalibormesaric
 #     pootzko - https://twitter.com/pootzko
