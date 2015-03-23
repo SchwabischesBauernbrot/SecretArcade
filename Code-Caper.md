@@ -20,6 +20,21 @@ leveltwo()
 levelthree()
 levelfour()
 levelfive()
+winscreen()
+
+void winscreen()
+	PlaySound("Arcade music")
+	loop
+		ClearText()
+		Print("You are now the proud owner of [Monetary Value Here]")
+		Print("")
+		Print("Congratulations!")
+		Sleep("0.5")
+		ClearText()
+		Print("You are now the proud owner of [Monetary Value Here]")
+		Sleep("0.5")
+	end
+end
 
 void levelone()
 	loop
