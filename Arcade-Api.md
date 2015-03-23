@@ -2,7 +2,7 @@
  # Return a random number between 0.0 and 1.0
  Random()
 
- # Set drawing color
+ # Set drawing color, values are between 0.0 and 1.0
  Color(r, g, b) 
 
  # Draw line between two points
