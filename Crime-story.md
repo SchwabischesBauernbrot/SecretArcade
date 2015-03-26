@@ -1,3 +1,10 @@
+The crime story requires the player to go to the cabinet during different times of the day.
+I track 3 times: AM (06-14), PM (14-20), Night (20-24,00-06).
+Note that in the Secret Arcade demo, time doesn't pass but you can set the time using the debug console. Press F12, type SetHour(x), press Enter. You'll have to restart the game afterwards, but it doesn't save anything; you just need to manually gather clues from the different times of the day.
+
+PS to Erik: Found interesting side-case. Since this game didn't (I added it now) use DisplayGraphics, the graphics were never cleared in-between games. This made itself apparent going from a different game to this, because the old game's graphics remained indefinitely.
+
+
 ```
 ClearText()
 Print("")
@@ -514,7 +521,7 @@ loop
 		DrawSceneDesc()
 		DrawOptions(GetSceneOptions())
 	end
-#Don't need DisplayGraphics since there's just text
-#	DisplayGraphics()
+#Don't need DisplayGraphics since there's just text, but doing it in case something old was here.
+	DisplayGraphics()
 end
 ```
