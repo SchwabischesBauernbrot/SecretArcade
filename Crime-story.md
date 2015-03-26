@@ -7,6 +7,7 @@ PS to Erik: Found interesting side-case. Since this game didn't (I added it now)
 
 ```
 ClearText()
+DisplayGraphics()
 Print("")
 Print("")
 Print("")
@@ -521,7 +522,5 @@ loop
 		DrawSceneDesc()
 		DrawOptions(GetSceneOptions())
 	end
-#Don't need DisplayGraphics since there's just text, but doing it in case something old was here.
-	DisplayGraphics()
 end
 ```
