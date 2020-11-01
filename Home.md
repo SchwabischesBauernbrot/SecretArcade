@@ -5,7 +5,7 @@ Welcome to the SecretArcade wiki!
 * [Programs](Programs)
 
 Download the Secret Arcade for Mac: 
-https://drive.google.com/open?id=0BxnlOFgp7hvFZDdpeERWT3lyR1E
+https://drive.google.com/file/d/1a13T6SRL9SBsMPNGCTwFqze5QhGvz0VS/view?usp=sharing
 
 Download the Secret Arcade for Windows: 
-https://drive.google.com/open?id=0BxnlOFgp7hvFQVhsRGtMeTdPckU
+https://drive.google.com/file/d/1E7_hJtqm0BQCsXyrwWdHHZbE_nTLu-M1/view?usp=sharing
